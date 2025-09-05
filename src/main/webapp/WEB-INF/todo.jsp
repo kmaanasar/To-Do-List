@@ -188,11 +188,13 @@
         
         // Show success message if available
         <c:if test="${not empty param.success}">
+        <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof showNotification === 'function') {
-                showNotification('Task ${fn:escapeXml(param.success)} successfully!', 'success');
+                showNotification('Task ' + '${fn:escapeXml(param.success)}' + ' successfully!', 'success');
             }
         });
+        </script>
         </c:if>
     </script>
 </body>
