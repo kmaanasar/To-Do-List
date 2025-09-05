@@ -12,7 +12,7 @@
 <body>
     <div class="container">
         <header class="header" style="position: relative;">
-            <h1>My Todo List</h1>
+            <h1>My To-Do List</h1>
             <p class="subtitle">Organize your tasks efficiently</p>
             <button id="darkModeToggle" class="add-btn" style="position: absolute; top: 1rem; right: 1rem; padding: 0.5rem 1rem; font-size: 0.8rem;" aria-label="Toggle dark mode">
                 Dark Mode
