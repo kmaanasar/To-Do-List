@@ -1,3 +1,4 @@
-com\todoapp\servlet\TodoServlet.class
 com\todoapp\model\TodoItem.class
+com\todoapp\servlet\TodoServlet.class
+com\todoapp\filter\CharacterEncodingFilter.class
 com\todoapp\service\TodoService.class
