@@ -128,16 +128,18 @@
 
         <script src="js/script.js"></script>
         <script>
-            const toggleBtn = document.getElementById('darkModeToggle');
+            document.addEventListener('DOMContentLoaded', function() {
+                const toggleBtn = document.getElementById('darkModeToggle');
 
-            // Load user's saved theme
-            if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
+                // Load user's saved theme
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.documentElement.classList.add('dark');
+                }
 
-            toggleBtn.addEventListener('click', () => {
-                const isDark = document.documentElement.classList.toggle('dark');
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                toggleBtn.addEventListener('click', () => {
+                    const isDark = document.documentElement.classList.toggle('dark');
+                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                });
             });
         </script>
 </body>
