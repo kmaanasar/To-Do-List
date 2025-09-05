@@ -3,13 +3,14 @@ package com.todoapp.service;
 import com.todoapp.model.TodoItem;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TodoService {
-    private static final String DATA_FILE = "todos.csv"; // relative to working dir
+    private static final String DATA_FILE = System.getProperty("java.io.tmpdir") + File.separator + "todos.csv";
     private final List<TodoItem> todos;
     private int nextId;
 
@@ -33,6 +34,7 @@ public class TodoService {
 
     public TodoItem addTodo(String task, String priority) {
         if (task == null || task.trim().isEmpty()) return null;
+        
         TodoItem todo = new TodoItem(nextId++, task.trim());
         if (priority != null && !priority.isEmpty()) {
             todo.setPriority(priority.toUpperCase());
@@ -82,9 +84,10 @@ public class TodoService {
     }
 
     private void loadTodos() {
+        Path filePath = Paths.get(DATA_FILE);
         try {
-            if (Files.exists(Paths.get(DATA_FILE))) {
-                List<String> lines = Files.readAllLines(Paths.get(DATA_FILE));
+            if (Files.exists(filePath)) {
+                List<String> lines = Files.readAllLines(filePath);
                 for (String line : lines) {
                     if (!line.trim().isEmpty()) {
                         TodoItem todo = TodoItem.fromString(line);
@@ -96,24 +99,44 @@ public class TodoService {
                         }
                     }
                 }
+            } else {
+                // Create the parent directories if they don't exist
+                Files.createDirectories(filePath.getParent());
             }
         } catch (IOException e) {
-            System.err.println("Error loading todos: " + e.getMessage());
+            System.err.println("Error loading todos from: " + DATA_FILE);
+            System.err.println("Error message: " + e.getMessage());
+            // Don't fail completely, just continue with empty list
         }
     }
 
     private void saveTodos() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(DATA_FILE))) {
-            for (TodoItem todo : todos) {
-                writer.write(todo.toString());
-                writer.newLine();
+        Path filePath = Paths.get(DATA_FILE);
+        try {
+            // Ensure parent directory exists
+            Files.createDirectories(filePath.getParent());
+            
+            try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
+                for (TodoItem todo : todos) {
+                    writer.write(todo.toString());
+                    writer.newLine();
+                }
             }
         } catch (IOException e) {
-            System.err.println("Error saving todos: " + e.getMessage());
+            System.err.println("Error saving todos to: " + DATA_FILE);
+            System.err.println("Error message: " + e.getMessage());
         }
     }
 
-    public int getTotalCount() { return todos.size(); }
-    public int getActiveCount() { return (int) todos.stream().filter(t -> !t.isCompleted()).count(); }
-    public int getCompletedCount() { return (int) todos.stream().filter(TodoItem::isCompleted).count(); }
+    public int getTotalCount() { 
+        return todos.size(); 
+    }
+    
+    public int getActiveCount() { 
+        return (int) todos.stream().filter(t -> !t.isCompleted()).count(); 
+    }
+    
+    public int getCompletedCount() { 
+        return (int) todos.stream().filter(TodoItem::isCompleted).count(); 
+    }
 }

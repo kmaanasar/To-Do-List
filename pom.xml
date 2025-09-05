@@ -23,7 +23,6 @@
         <jsp.version>2.3.3</jsp.version>
         <jstl.version>1.2</jstl.version>
         <junit.version>5.8.2</junit.version>
-        <spring.version>5.3.21</spring.version>
     </properties>
 
     <dependencies>
@@ -43,18 +42,18 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- JSTL -->
+        <!-- JSTL API -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>${jstl.version}</version>
         </dependency>
 
-        <!-- Spring Web (for CharacterEncodingFilter only) -->
+        <!-- JSTL Implementation -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-impl</artifactId>
+            <version>1.2.5</version>
         </dependency>
 
         <!-- Tests -->
@@ -92,7 +91,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.3</version>
                 <configuration>
-                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
 
@@ -115,6 +114,7 @@
                     <webApp>
                         <contextPath>/todo-app</contextPath>
                     </webApp>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
                 </configuration>
             </plugin>
         </plugins>
