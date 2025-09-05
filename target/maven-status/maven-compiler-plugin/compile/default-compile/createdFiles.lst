@@ -1,0 +1,3 @@
+com\todoapp\servlet\TodoServlet.class
+com\todoapp\model\TodoItem.class
+com\todoapp\service\TodoService.class
