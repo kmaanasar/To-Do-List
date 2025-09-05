@@ -2,6 +2,7 @@ package com.todoapp.servlet;
 
 import com.todoapp.model.TodoItem;
 import com.todoapp.service.TodoService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,67 +23,64 @@ public class TodoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String action = request.getParameter("action");
+
         String filter = request.getParameter("filter");
-        
-        if ("delete".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            todoService.deleteTodo(id);
-            response.sendRedirect("todos");
-            return;
-        }
-        
-        if ("toggle".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            todoService.toggleComplete(id);
-            response.sendRedirect("todos");
-            return;
-        }
 
         List<TodoItem> todos;
-        if ("active".equals(filter)) {
+        if ("active".equalsIgnoreCase(filter)) {
             todos = todoService.getActiveTodos();
-        } else if ("completed".equals(filter)) {
+        } else if ("completed".equalsIgnoreCase(filter)) {
             todos = todoService.getCompletedTodos();
         } else {
             todos = todoService.getAllTodos();
         }
+
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
         request.setAttribute("todos", todos);
         request.setAttribute("filter", filter);
         request.setAttribute("totalCount", todoService.getTotalCount());
         request.setAttribute("activeCount", todoService.getActiveCount());
         request.setAttribute("completedCount", todoService.getCompletedCount());
-        
+
         request.getRequestDispatcher("/WEB-INF/todo.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         String action = request.getParameter("action");
-        
+
         if ("add".equals(action)) {
             String task = request.getParameter("task");
             String priority = request.getParameter("priority");
-            
             if (task != null && !task.trim().isEmpty()) {
-                todoService.addTodo(task.trim(), priority);
+                todoService.addTodo(task, priority);
             }
+        } else if ("update".equals(action)) {
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                String task = request.getParameter("task");
+                String priority = request.getParameter("priority");
+                todoService.updateTodo(id, task, priority);
+            } catch (NumberFormatException ignored) {}
+        } else if ("delete".equals(action)) {
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                todoService.deleteTodo(id);
+            } catch (NumberFormatException ignored) {}
+        } else if ("toggle".equals(action)) {
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                todoService.toggleComplete(id);
+            } catch (NumberFormatException ignored) {}
         }
-        
-        if ("update".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            String task = request.getParameter("task");
-            String priority = request.getParameter("priority");
-            
-            if (task != null && !task.trim().isEmpty()) {
-                todoService.updateTodo(id, task.trim(), priority);
-            }
-        }
-        
+
         response.sendRedirect("todos");
     }
 }

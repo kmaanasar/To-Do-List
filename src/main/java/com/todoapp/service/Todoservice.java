@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TodoService {
-    private static final String DATA_FILE = "todos.csv";
-    private List<TodoItem> todos;
+    private static final String DATA_FILE = "todos.csv"; // relative to working dir
+    private final List<TodoItem> todos;
     private int nextId;
 
     public TodoService() {
@@ -24,19 +24,16 @@ public class TodoService {
     }
 
     public List<TodoItem> getActiveTodos() {
-        return todos.stream()
-                .filter(todo -> !todo.isCompleted())
-                .collect(Collectors.toList());
+        return todos.stream().filter(t -> !t.isCompleted()).collect(Collectors.toList());
     }
 
     public List<TodoItem> getCompletedTodos() {
-        return todos.stream()
-                .filter(TodoItem::isCompleted)
-                .collect(Collectors.toList());
+        return todos.stream().filter(TodoItem::isCompleted).collect(Collectors.toList());
     }
 
     public TodoItem addTodo(String task, String priority) {
-        TodoItem todo = new TodoItem(nextId++, task);
+        if (task == null || task.trim().isEmpty()) return null;
+        TodoItem todo = new TodoItem(nextId++, task.trim());
         if (priority != null && !priority.isEmpty()) {
             todo.setPriority(priority.toUpperCase());
         }
@@ -68,7 +65,9 @@ public class TodoService {
     public boolean updateTodo(int id, String newTask, String priority) {
         TodoItem todo = findTodoById(id);
         if (todo != null) {
-            todo.setTask(newTask);
+            if (newTask != null && !newTask.trim().isEmpty()) {
+                todo.setTask(newTask.trim());
+            }
             if (priority != null && !priority.isEmpty()) {
                 todo.setPriority(priority.toUpperCase());
             }
@@ -79,10 +78,7 @@ public class TodoService {
     }
 
     private TodoItem findTodoById(int id) {
-        return todos.stream()
-                .filter(todo -> todo.getId() == id)
-                .findFirst()
-                .orElse(null);
+        return todos.stream().filter(t -> t.getId() == id).findFirst().orElse(null);
     }
 
     private void loadTodos() {
@@ -117,15 +113,7 @@ public class TodoService {
         }
     }
 
-    public int getTotalCount() {
-        return todos.size();
-    }
-
-    public int getActiveCount() {
-        return (int) todos.stream().filter(todo -> !todo.isCompleted()).count();
-    }
-
-    public int getCompletedCount() {
-        return (int) todos.stream().filter(TodoItem::isCompleted).count();
-    }
+    public int getTotalCount() { return todos.size(); }
+    public int getActiveCount() { return (int) todos.stream().filter(t -> !t.isCompleted()).count(); }
+    public int getCompletedCount() { return (int) todos.stream().filter(TodoItem::isCompleted).count(); }
 }

@@ -3,34 +3,32 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-    
+
     <display-name>Todo List Application</display-name>
 
-    <!-- Session configuration -->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
-    
+
     <!-- Error pages -->
     <error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/error.jsp</location>
     </error-page>
-    
     <error-page>
         <error-code>500</error-code>
         <location>/WEB-INF/error.jsp</location>
     </error-page>
-    
-    <!-- JSTL configuration -->
+
+    <!-- JSP defaults -->
     <jsp-config>
         <jsp-property-group>
             <url-pattern>*.jsp</url-pattern>
             <page-encoding>UTF-8</page-encoding>
         </jsp-property-group>
     </jsp-config>
-    
-    <!-- Filter for character encoding -->
+
+    <!-- Character encoding (uses Spring's filter since you include spring-web) -->
     <filter>
         <filter-name>CharacterEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -43,10 +41,15 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
-    
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
+
+    <!-- No servlet mappings needed here because TodoServlet uses @WebServlet("/todos") -->
+
+    <!-- Optional: make / hit /todos -->
+    <welcome-file-list>
+        <welcome-file>todos</welcome-file>
+    </welcome-file-list>
 </web-app>

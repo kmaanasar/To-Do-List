@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -8,22 +8,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List App</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
     <div class="container">
         <header class="header" style="position: relative;">
             <h1>My Todo List</h1>
             <p class="subtitle">Organize your tasks efficiently</p>
-            <button id="darkModeToggle" class="add-btn" style="position: absolute; top: 1rem; right: 1rem;">Toggle Dark Mode</button>
+            <button id="darkModeToggle" class="add-btn" style="position: absolute; top: 1rem; right: 1rem;" aria-label="Toggle dark mode">Toggle Dark Mode</button>
         </header>
 
         <!-- Add new todo form -->
-        <form class="add-todo-form" method="post" action="todos">
+        <form class="add-todo-form" method="post" action="${pageContext.request.contextPath}/todos">
             <input type="hidden" name="action" value="add">
             <div class="input-group">
-                <input type="text" name="task" placeholder="Add a new task..." required maxlength="200">
-                <select name="priority" class="priority-select">
+                <input type="text" name="task" placeholder="Add a new task..." required maxlength="200" aria-label="Task text">
+                <select name="priority" class="priority-select" aria-label="Priority">
                     <option value="LOW">Low</option>
                     <option value="MEDIUM" selected>Medium</option>
                     <option value="HIGH">High</option>
@@ -34,13 +34,13 @@
 
         <!-- Filter buttons -->
         <div class="filter-tabs">
-            <a href="todos" class="tab ${filter == null ? 'active' : ''}">
+            <a href="${pageContext.request.contextPath}/todos" class="tab ${empty filter ? 'active' : ''}">
                 All <span class="count">${totalCount}</span>
             </a>
-            <a href="todos?filter=active" class="tab ${filter == 'active' ? 'active' : ''}">
+            <a href="${pageContext.request.contextPath}/todos?filter=active" class="tab ${filter == 'active' ? 'active' : ''}">
                 Active <span class="count">${activeCount}</span>
             </a>
-            <a href="todos?filter=completed" class="tab ${filter == 'completed' ? 'active' : ''}">
+            <a href="${pageContext.request.contextPath}/todos?filter=completed" class="tab ${filter == 'completed' ? 'active' : ''}">
                 Completed <span class="count">${completedCount}</span>
             </a>
         </div>
@@ -56,27 +56,35 @@
             <c:forEach var="todo" items="${todos}">
                 <div class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
                     <div class="todo-content">
-                        <form method="get" action="todos" style="display: inline;">
+                        <!-- Toggle (POST) -->
+                        <form method="post" action="${pageContext.request.contextPath}/todos" style="display: inline;">
                             <input type="hidden" name="action" value="toggle">
                             <input type="hidden" name="id" value="${todo.id}">
-                            <button type="submit" class="check-btn ${todo.completed ? 'checked' : ''}">
+                            <button type="submit" class="check-btn ${todo.completed ? 'checked' : ''}" aria-label="Toggle complete">
                                 ${todo.completed ? '✓' : ''}
                             </button>
                         </form>
-                        
+
                         <div class="task-info">
-                            <span class="task-text" onclick="editTask('${todo.id}', '${fn:escapeXml(todo.task)}', '${fn:escapeXml(todo.priority)}')">${todo.task}</span>
+                            <span class="task-text"
+                                  data-id="${todo.id}"
+                                  data-task="${fn:escapeXml(todo.task)}"
+                                  data-priority="${fn:escapeXml(todo.priority)}">
+                                ${todo.task}
+                            </span>
                             <div class="task-meta">
-                                <span class="priority priority-${todo.priority.toLowerCase()}">${todo.priority}</span>
+                                <span class="priority priority-${fn:toLowerCase(todo.priority)}">${todo.priority}</span>
                                 <span class="created-date">${todo.createdAt}</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <form method="get" action="todos" style="display: inline;">
+
+                    <!-- Delete (POST) -->
+                    <form method="post" action="${pageContext.request.contextPath}/todos" style="display: inline;">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="id" value="${todo.id}">
-                        <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this task?')">×</button>
+                        <button type="submit" class="delete-btn" aria-label="Delete task"
+                                onclick="return confirm('Are you sure you want to delete this task?')">×</button>
                     </form>
                 </div>
             </c:forEach>
@@ -100,10 +108,10 @@
     </div>
 
     <!-- Edit modal -->
-    <div id="editModal" class="modal">
+    <div id="editModal" class="modal" aria-modal="true" role="dialog">
         <div class="modal-content">
             <h3>Edit Task</h3>
-            <form method="post" action="todos" id="editForm">
+            <form method="post" action="${pageContext.request.contextPath}/todos" id="editForm">
                 <input type="hidden" name="action" value="update">
                 <input type="hidden" name="id" id="editId">
                 <div class="form-group">
@@ -126,21 +134,18 @@
         </div>
     </div>
 
-        <script src="js/script.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const toggleBtn = document.getElementById('darkModeToggle');
-
-                // Load user's saved theme
-                if (localStorage.getItem('theme') === 'dark') {
-                    document.documentElement.classList.add('dark');
-                }
-
-                toggleBtn.addEventListener('click', () => {
-                    const isDark = document.documentElement.classList.toggle('dark');
-                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                });
+    <script src="${pageContext.request.contextPath}/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('darkModeToggle');
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            toggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
             });
-        </script>
+        });
+    </script>
 </body>
 </html>

@@ -3,51 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.todoapp</groupId>
     <artifactId>todo-list-app</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
-    
+
     <name>Todo List Application</name>
     <description>A complete todo list web application with Java backend</description>
-    
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
+
         <servlet.version>4.0.1</servlet.version>
         <jsp.version>2.3.3</jsp.version>
         <jstl.version>1.2</jstl.version>
         <junit.version>5.8.2</junit.version>
         <spring.version>5.3.21</spring.version>
     </properties>
-    
+
     <dependencies>
-        <!-- Spring Core -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <!-- Spring Context -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <!-- Spring Beans -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
         <!-- Servlet API -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -55,7 +34,7 @@
             <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- JSP API -->
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
@@ -63,30 +42,28 @@
             <version>${jsp.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- JSTL -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>${jstl.version}</version>
         </dependency>
-        
-        <!-- Spring Web (for CharacterEncodingFilter) -->
+
+        <!-- Spring Web (for CharacterEncodingFilter only) -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        
-        <!-- JUnit for testing -->
+
+        <!-- Tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        
-        <!-- Mockito for testing -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -94,12 +71,11 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <finalName>todo-app</finalName>
-        
         <plugins>
-            <!-- Compiler plugin -->
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -109,36 +85,25 @@
                     <target>11</target>
                 </configuration>
             </plugin>
-            
-            <!-- WAR plugin -->
+
+            <!-- WAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.3</version>
                 <configuration>
-                    <webXml>src\main\webapp\WEB-INF\web.xml</webXml>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
             </plugin>
-            
-            <!-- Surefire plugin for testing -->
+
+            <!-- Surefire -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M7</version>
             </plugin>
-            
-            <!-- Tomcat plugin for easy deployment -->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <port>8080</port>
-                    <path>/todo-app</path>
-                </configuration>
-            </plugin>
-            
-            <!-- Jetty plugin as alternative -->
+
+            <!-- Jetty (easy local run) -->
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
@@ -154,25 +119,16 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
-        <!-- Development profile -->
         <profile>
             <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <env>development</env>
-            </properties>
+            <activation><activeByDefault>true</activeByDefault></activation>
+            <properties><env>development</env></properties>
         </profile>
-        
-        <!-- Production profile -->
         <profile>
             <id>prod</id>
-            <properties>
-                <env>production</env>
-            </properties>
+            <properties><env>production</env></properties>
             <build>
                 <plugins>
                     <plugin>
@@ -191,5 +147,4 @@
             </build>
         </profile>
     </profiles>
-    
 </project>
