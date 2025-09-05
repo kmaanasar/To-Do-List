@@ -5,12 +5,7 @@
          version="3.0">
     
     <display-name>Todo List Application</display-name>
-    
-    <!-- Welcome file list -->
-    <welcome-file-list>
-        <welcome-file>todos</welcome-file>
-    </welcome-file-list>
-    
+
     <!-- Session configuration -->
     <session-config>
         <session-timeout>30</session-timeout>

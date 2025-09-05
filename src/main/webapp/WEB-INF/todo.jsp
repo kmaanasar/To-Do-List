@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,9 +12,10 @@
 </head>
 <body>
     <div class="container">
-        <header class="header">
+        <header class="header" style="position: relative;">
             <h1>My Todo List</h1>
             <p class="subtitle">Organize your tasks efficiently</p>
+            <button id="darkModeToggle" class="add-btn" style="position: absolute; top: 1rem; right: 1rem;">Toggle Dark Mode</button>
         </header>
 
         <!-- Add new todo form -->
@@ -123,6 +126,19 @@
         </div>
     </div>
 
-    <script src="js/script.js"></script>
+        <script src="js/script.js"></script>
+        <script>
+            const toggleBtn = document.getElementById('darkModeToggle');
+
+            // Load user's saved theme
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            });
+        </script>
 </body>
 </html>
