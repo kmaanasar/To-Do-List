@@ -159,6 +159,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Verify Maven is installed: `mvn -version`
 - Run `mvn clean install` to resolve dependencies
 
-## Contact
-
-For questions or support, please open an issue in the repository.
